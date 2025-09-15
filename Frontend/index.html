@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Commute Optimizer</title>
+</head>
+<body>
+    <h1>Find Students Nearby</h1>
+    <input type="text" id="location" placeholder="Enter your location" />
+    <button onclick="findNearby()">Find Nearby Students</button>
+
+    <div id="results"></div>
+
+    <script>
+        function findNearby() {
+            const location = document.getElementById('location').value;
+            fetch(`http://localhost:3000/nearby?location=${encodeURIComponent(location)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '';
+                    if (data.length === 0) {
+                        resultsDiv.innerHTML = '<p>No nearby students found.</p>';
+                        return;
+                    }
+                    data.forEach(student => {
+                        resultsDiv.innerHTML += `<p><strong>${student.name}</strong> - ${student.location}</p>`;
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('results').innerHTML = '<p>Error fetching data.</p>';
+                });
+        }
+    </script>
+</body>
+</html>
